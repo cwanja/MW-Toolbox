@@ -268,6 +268,23 @@ Retrieves audit log entries for Copilot interaction events.
     -Append
 ```
 
+### [copilot_retrieval_api.ipynb](Copilot/copilot_retrieval_api.ipynb)
+
+A Jupyter Notebook for interacting with a Copilot retrieval API.
+
+#### copilot_retrieval_api.ipynb Example
+
+Open the notebook in a compatible environment like VS Code to see the documented steps for API interaction.
+
+### [copilot-retrieval-api.swagger.yaml](Copilot/copilot-retrieval-api.swagger.yaml)
+
+A Swagger/OpenAPI definition file for a Copilot retrieval API. This file describes the API endpoints, parameters, and responses & can be used to create a custom Power Platform connector to this API.
+
+#### copilot-retrieval-api.swagger.yaml Example
+
+Use a Swagger UI viewer to visualize and interact with the API defined in this file.
+
+
 ### [Get-CopilotSharingAuditLogItems.ps1](Copilot/Get-CopilotSharingAuditLogItems.ps1)
 
 Retrieves audit log entries for Copilot sharing events and activities.
@@ -346,6 +363,18 @@ ConvertTo-SharePointDriveId -siteId "<site GUID>" `
     -webId "<web GUID>" `
     -listId "<list GUID>"
 ```
+
+### [Get-SystemPerformanceAnalysis.ps1](Misc/Get-SystemPerformanceAnalysis.ps1)
+
+Analyzes system performance metrics and provides detailed performance insights.
+
+#### Get-SystemPerformanceAnalysis.ps1 Example
+
+```PowerShell
+# Run the script to analyze system performance
+.\Misc\Get-SystemPerformanceAnalysis.ps1
+```
+
 
 ## MsGraph
 
@@ -488,62 +517,373 @@ Get-CopilotAgentsViaAPI -ClientId "<your client id>" `
 
 ### [Get-CopilotsAndComponentsFromAllEnvironments.ps1](Power-Platform/Get-CopilotsAndComponentsFromAllEnvironments.ps1)
 
-Gets Copilots and their components from all Power Platform environments.
+Retrieves a comprehensive list of all Copilot agents and their components from all Power Platform environments.
 
 #### Get-CopilotsAndComponentsFromAllEnvironments.ps1 Example
 
 ```PowerShell
-Get-CopoilotsAndCompnonentsFromAllEnvironments.ps1 -ClientId "<your client id>" `
-    -ClientSecret "<your client secret>" `
-    -TenantDomain "<your domain>.onmicrosoft.com" | 
-    Out-File "C:\temp\copilotsAndComponents.txt"
+# Run the script to get all copilots and components
+.\Power-Platform\Get-CopilotsAndComponentsFromAllEnvironments.ps1 | Export-Csv -Path "C:\temp\AllCopilotsAndComponents.csv" -NoTypeInformation
 ```
 
 ### [Get-PowerAppsAndConnections.ps1](Power-Platform/Get-PowerAppsAndConnections.ps1)
 
-Gets Power Apps and their connections across all environments.
+Retrieves all Power Apps and their connections within the tenant.
 
 #### Get-PowerAppsAndConnections.ps1 Example
 
 ```PowerShell
-# Set output parameters
-Get-PowerPlatformAppsAndConnections | Export-Csv -Path "c:\temp\PowerPlatformAppsAndConnections.csv"
+# Run the script to get all Power Apps and their connections
+.\Power-Platform\Get-PowerAppsAndConnections.ps1 | Export-Csv -Path "C:\temp\PowerAppsAndConnections.csv" -NoTypeInformation
 ```
 
 ### [Get-PowerPlatformEnvironmentInfo.ps1](Power-Platform/Get-PowerPlatformEnvironmentInfo.ps1)
 
-Retrieves detailed information about Power Platform environments.
+Retrieves detailed information about all Power Platform environments.
 
 #### Get-PowerPlatformEnvironmentInfo.ps1 Example
 
 ```PowerShell
-Get-PowerPlatformEnvironmentInfo | Export-Csv -Path "c:\temp\PowerPlatformEnvironmentInfo.csv" -NoTypeInformation -Force
+# Run the script to get environment information
+.\Power-Platform\Get-PowerPlatformEnvironmentInfo.ps1 | Export-Csv -Path "C:\temp\PowerPlatformEnvironments.csv" -NoTypeInformation
 ```
 
 ### [Get-PowerPlatformUsageReports.ps1](Power-Platform/Get-PowerPlatformUsageReports.ps1)
 
-Generates usage reports for Power Platform services and applications.
+Generates usage reports for Power Platform services.
 
 #### Get-PowerPlatformUsageReports.ps1 Example
 
 ```PowerShell
-$tenantDomain="yourdomain.onmicrosoft.com"
+# Run the script to generate usage reports
+.\Power-Platform\Get-PowerPlatformUsageReports.ps1 -ReportType "ActiveUsers" -OutputDirectory "C:\temp\UsageReports"
+```
+
+### [Get-PowerPlatTenantSettingsViaAPI.ps1](Power-Platform/Get-PowerPlatTenantSettingsViaAPI.ps1)
+
+Retrieves tenant-level settings for Power Platform via API.
+
+#### Get-PowerPlatTenantSettingsViaAPI.ps1 Example
+
+```PowerShell
+# Set your environment parameters
+$clientId = "<your client id>"
+$clientSecret = "<your client secret>"
+$tenantDomain = "<your tenant domain>.onmicrosoft.com"
+
+# Run the script
+.\Power-Platform\Get-PowerPlatTenantSettingsViaAPI.ps1 -ClientId $clientId -ClientSecret $clientSecret -TenantDomain $tenantDomain
+```
+
+### [Get-UsersViaAPI.ps1](Power-Platform/Get-UsersViaAPI.ps1)
+
+Retrieves users from a Power Platform environment via API.
+
+#### Get-UsersViaAPI.ps1 Example
+
+```PowerShell
+# Set your environment parameters
+$clientId = "<your client id>"
+$clientSecret = "<your client secret>"
+$orgUrl = "<your org>.crm.dynamics.com"
+$tenantDomain = "<your tenant domain>.onmicrosoft.com"
+
+# Run the script
+.\Power-Platform\Get-UsersViaAPI.ps1 -ClientId $clientId -ClientSecret $clientSecret -OrgUrl $orgUrl -TenantDomain $tenantDomain
+```
+
+## SharePoint
+
+### [Inventory-SPFarm.ps1](SharePoint/Inventory-SPFarm.ps1)
+
+Performs an inventory of a SharePoint farm. This is for on-premises SharePoint environments.
+
+#### Inventory-SPFarm.ps1 Example
+
+```PowerShell
+# Run the script to start the inventory process
+.\SharePoint\Inventory-SPFarm.ps1 -FarmConfigDatabase "SP_Config"
+```
+
+## SharePoint-Online
+
+### [Add-OwnersToSharePointSite.ps1](SharePoint-Online/Add-OwnersToSharePointSite.ps1)
+
+Adds owners to a SharePoint Online site.
+
+#### Add-OwnersToSharePointSite.ps1 Example
+
+```PowerShell
+# Set your parameters
+$siteUrl = "https://yourtenant.sharepoint.com/sites/YourSite"
+$ownerEmails = "user1@yourdomain.com", "user2@yourdomain.com"
+
+# Run the script
+.\SharePoint-Online\Add-OwnersToSharePointSite.ps1 -SiteUrl $siteUrl -OwnerEmails $ownerEmails
+```
+
+### [Get-CopilotAgentReport.ps1](SharePoint-Online/Get-CopilotAgentReport.ps1)
+
+Generates a report on Copilot agents in SharePoint Online.
+
+#### Get-CopilotAgentReport.ps1 Example
+
+```PowerShell
+# Run the script to generate the report
+.\SharePoint-Online\Get-CopilotAgentReport.ps1 -OutputDirectory "C:\temp\Reports"
+```
+
+### [Get-GraphDeltaQueryResults.ps1](SharePoint-Online/Get-GraphDeltaQueryResults.ps1)
+
+Retrieves results from a Microsoft Graph delta query, which can be used to track changes to SharePoint Online resources.
+
+#### Get-GraphDeltaQueryResults.ps1 Example
+
+```PowerShell
+# Run the script with your delta query parameters
+.\SharePoint-Online\Get-GraphDeltaQueryResults.ps1 -DeltaLink "your_delta_link"
+```
+
+### [Get-SharePointAgentCreationAuditLogItems.ps1](SharePoint-Online/Get-SharePointAgentCreationAuditLogItems.ps1)
+
+Retrieves audit log items related to the creation of SharePoint agents.
+
+#### Get-SharePointAgentCreationAuditLogItems.ps1 Example
+
+```PowerShell
+# Set your parameters
+$upn = "admin@yourdomain.com"
 $startDate = "2025-06-01"
-$endDate = "2025-06-23"
-$tenantId="<your tenant id>"
+$endDate = "2025-06-24"
 
-$usageReports=Get-PowerPlatformUsageReports -StartDate $startDate `
-    -EndDate $endDate `
-    -TenantDomain $tenantDomain `
-    -TenantId $tenantId `
-    -SleepTime 600 `
-    -OutputLocation "C:\temp"
+# Run the script
+.\SharePoint-Online\Get-SharePointAgentCreationAuditLogItems.ps1 -StartDate $startDate -EndDate $endDate -UserPrincipalName $upn
+```
 
-foreach ($report in $usageReports.Keys) {
-    $reportType=$report
-    write-host "exporting $reportType"
-    $usageReports.$report | out-file "c:\temp\$reportType.csv"
-}
+### [Get-SharePointAgentInteractionAuditLogItems.ps1](SharePoint-Online/Get-SharePointAgentInteractionAuditLogItems.ps1)
+
+Retrieves audit log items for SharePoint agent interactions.
+
+#### Get-SharePointAgentInteractionAuditLogItems.ps1 Example
+
+```PowerShell
+# Set your parameters
+$upn = "admin@yourdomain.com"
+$startDate = "2025-06-01"
+$endDate = "2025-06-24"
+
+# Run the script
+.\SharePoint-Online\Get-SharePointAgentInteractionAuditLogItems.ps1 -StartDate $startDate -EndDate $endDate -UserPrincipalName $upn
+```
+
+### [Get-SharePointFileProperties.ps1](SharePoint-Online/Get-SharePointFileProperties.ps1)
+
+Retrieves properties of files in a SharePoint Online document library.
+
+#### Get-SharePointFileProperties.ps1 Example
+
+```PowerShell
+# Set your parameters
+$siteUrl = "https://yourtenant.sharepoint.com/sites/YourSite"
+$libraryName = "Documents"
+
+# Run the script
+.\SharePoint-Online\Get-SharePointFileProperties.ps1 -SiteUrl $siteUrl -LibraryName $libraryName
+```
+
+### [New-DemoProjectHubSites.ps1](SharePoint-Online/New-DemoProjectHubSites.ps1)
+
+Creates new hub sites for a demo project in SharePoint Online.
+
+#### New-DemoProjectHubSites.ps1 Example
+
+```PowerShell
+# Run the script to create the demo hub sites
+.\SharePoint-Online\New-DemoProjectHubSites.ps1
+```
+
+### [New-DemoProjectPlanDocs.ps1](SharePoint-Online/New-DemoProjectPlanDocs.ps1)
+
+Creates new project plan documents for a demo in SharePoint Online.
+
+#### New-DemoProjectPlanDocs.ps1 Example
+
+```PowerShell
+# Run the script to create the demo documents
+.\SharePoint-Online\New-DemoProjectPlanDocs.ps1
+```
+
+### [New-HubSites.ps1](SharePoint-Online/New-HubSites.ps1)
+
+Creates new hub sites in SharePoint Online.
+
+#### New-HubSites.ps1 Example
+
+```PowerShell
+# Run the script to create new hub sites
+.\SharePoint-Online\New-HubSites.ps1 -HubSiteNames "HR", "IT", "Finance"
+```
+
+### [New-OneDriveSites.ps1](SharePoint-Online/New-OneDriveSites.ps1)
+
+Provisions new OneDrive for Business sites for users.
+
+#### New-OneDriveSites.ps1 Example
+
+```PowerShell
+# Set the user emails
+$userEmails = "user1@yourdomain.com", "user2@yourdomain.com"
+
+# Run the script
+.\SharePoint-Online\New-OneDriveSites.ps1 -UserEmails $userEmails
+```
+
+### [Set-SPOOrgAssetLibrary.ps1](SharePoint-Online/Set-SPOOrgAssetLibrary.ps1)
+
+Designates a SharePoint Online document library as an organization assets library.
+
+#### Set-SPOOrgAssetLibrary.ps1 Example
+
+```PowerShell
+# Set your parameters
+$libraryUrl = "https://yourtenant.sharepoint.com/sites/branding/logos"
+
+# Run the script
+.\SharePoint-Online\Set-SPOOrgAssetLibrary.ps1 -LibraryUrl $libraryUrl
+```
+
+### [Upload-Documents.ps1](SharePoint-Online/Upload-Documents.ps1)
+
+Uploads documents to a SharePoint Online document library.
+
+#### Upload-Documents.ps1 Example
+
+```PowerShell
+# Set your parameters
+$siteUrl = "https://yourtenant.sharepoint.com/sites/YourSite"
+$libraryName = "Documents"
+$sourceFolder = "C:\temp\Upload"
+
+# Run the script
+.\SharePoint-Online\Upload-Documents.ps1 -SiteUrl $siteUrl -LibraryName $libraryName -SourceFolder $sourceFolder
+```
+
+## SQL
+
+### [TableSchemaToJSON.sql](SQL/TableSchemaToJSON.sql)
+
+A SQL script that converts a table schema to a JSON format.
+
+#### TableSchemaToJSON.sql Example
+
+```sql
+-- Execute this script in your SQL management tool against your database.
+-- It will output the schema of a specified table as JSON.
+```
+
+## Teams
+
+### [Get-AllTeamsMeetingPolicies.ps1](Teams/Get-AllTeamsMeetingPolicies.ps1)
+
+Retrieves all Microsoft Teams meeting policies.
+
+#### Get-AllTeamsMeetingPolicies.ps1 Example
+
+```PowerShell
+# Run the script to get all meeting policies
+.\Teams\Get-AllTeamsMeetingPolicies.ps1 | Export-Csv -Path "C:\temp\TeamsMeetingPolicies.csv" -NoTypeInformation
+```
+
+### [Get-AllTeamsViaGraph.ps1](Teams/Get-AllTeamsViaGraph.ps1)
+
+Retrieves a list of all teams in the organization using Microsoft Graph.
+
+#### Get-AllTeamsViaGraph.ps1 Example
+
+```PowerShell
+# Run the script to get all teams
+.\Teams\Get-AllTeamsViaGraph.ps1
+```
+
+### [Get-ChannelMessages.ps1](Teams/Get-ChannelMessages.ps1)
+
+Retrieves messages from a specific Microsoft Teams channel.
+
+#### Get-ChannelMessages.ps1 Example
+
+```PowerShell
+# Set your parameters
+$teamId = "your-team-id"
+$channelId = "your-channel-id"
+
+# Run the script
+.\Teams\Get-ChannelMessages.ps1 -TeamId $teamId -ChannelId $channelId
+```
+
+### [Get-TeamsAndMembers.ps1](Teams/Get-TeamsAndMembers.ps1)
+
+Retrieves all teams and their members.
+
+#### Get-TeamsAndMembers.ps1 Example
+
+```PowerShell
+# Run the script to get teams and members
+.\Teams\Get-TeamsAndMembers.ps1 | Export-Csv -Path "C:\temp\TeamsAndMembers.csv" -NoTypeInformation
+```
+
+### [Get-UserTeams.ps1](Teams/Get-UserTeams.ps1)
+
+Retrieves the teams that a specific user is a member of.
+
+#### Get-UserTeams.ps1 Example
+
+```PowerShell
+# Set the user UPN
+$upn = "user@yourdomain.com"
+
+# Run the script
+.\Teams\Get-UserTeams.ps1 -UserPrincipalName $upn
+```
+
+### [New-Channels.ps1](Teams/New-Channels.ps1)
+
+Creates new channels in a Microsoft Team.
+
+#### New-Channels.ps1 Example
+
+```PowerShell
+# Set your parameters
+$teamId = "your-team-id"
+$channelNames = "General", "Announcements", "Project-X"
+
+# Run the script
+.\Teams\New-Channels.ps1 -TeamId $teamId -ChannelNames $channelNames
+```
+
+### [New-Teams.ps1](Teams/New-Teams.ps1)
+
+Creates new teams in Microsoft Teams.
+
+#### New-Teams.ps1 Example
+
+```PowerShell
+# Run the script to create new teams
+.\Teams\New-Teams.ps1 -TeamNames "Marketing Team", "Sales Team"
+```
+
+### [Set-ChannelModerationSettings.ps1](Teams/Set-ChannelModerationSettings.ps1)
+
+Configures moderation settings for a Microsoft Teams channel.
+
+#### Set-ChannelModerationSettings.ps1 Example
+
+```PowerShell
+# Set your parameters
+$teamId = "your-team-id"
+$channelId = "your-channel-id"
+
+# Run the script
+.\Teams\Set-ChannelModerationSettings.ps1 -TeamId $teamId -ChannelId $channelId -EnableModeration $true
 ```
 
 ### [Get-PowerPlatTenantSettingsViaAPI.ps1](Power-Platform/Get-PowerPlatTenantSettingsViaAPI.ps1)
@@ -619,6 +959,20 @@ Inventory-SPFarm `
     -InventoryWebParts
 
 ```
+
+## SQL
+
+### [TableSchemaToJSON.sql](SQL/TableSchemaToJSON.sql)
+
+SQL query that converts a table schema to JSON format, useful for documentation and schema analysis. Can be used in agent instructions to tell the agent how the tables are structured.
+
+## Swagger Files
+
+### [copilot-retrieval-api.swagger.yaml](Swagger%20Files/copilot-retrieval-api.swagger.yaml)
+
+OpenAPI/Swagger specification for the Copilot Retrieval API, for use when building custom connectors for Power Platform.
+
+
 
 ## SharePoint-Online
 

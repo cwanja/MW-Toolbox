@@ -18,7 +18,7 @@ function Get-CopilotAgentsViaAPI {
         [string[]]$FieldList="botid,applicationmanifestinformation,componentidunique,name,configuration,createdon,publishedon,_ownerid_value,_createdby_value,solutionid,modifiedon,_owninguser_value,schemaname,_modifiedby_value,_publishedby_value,authenticationmode,synchronizationstatus,ismanaged"
     )
     BEGIN {
-                if ($OrgUrl.StartsWith("https://")) {
+        if ($OrgUrl.StartsWith("https://")) {
             $OrgUrl = $OrgUrl.Substring(8)
         }
         $tokenUrl = "https://login.microsoftonline.com/$TenantDomain/oauth2/v2.0/token"

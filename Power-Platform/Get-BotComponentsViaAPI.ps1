@@ -29,7 +29,9 @@ function Get-BotComponentsViaAPI {
     }
     PROCESS {
             #get list of agents/copilots/bots
-        $response=Invoke-RestMethod -Uri "https://$OrgUrl/api/data/v9.2/botcomponents?`$select=$FieldList" `
+            <#$response=Invoke-RestMethod -Uri "https://$OrgUrl/api/data/v9.2/botcomponents?`$select=$FieldList" `
+            -Headers @{Authorization = "Bearer $($token.access_token)"}#>
+        $response=Invoke-RestMethod -Uri "https://$OrgUrl/api/data/v9.2/botcomponents" `
             -Headers @{Authorization = "Bearer $($token.access_token)"}
     }
     END {

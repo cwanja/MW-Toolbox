@@ -1,6 +1,6 @@
 # Configuration Variables used by multiple scripts
 $workingDirectory = (Get-Location).Path
-$startDate = (Get-Date).AddDays(-90).ToString("yyyy-MM-dd")
+$startDate = (Get-Date).AddDays(-10).ToString("yyyy-MM-dd")
 $endDate = (Get-Date).AddDays(1).ToString("yyyy-MM-dd")
 $outputDirectory = "c:\temp"
 
@@ -152,7 +152,6 @@ do {
         }
         "Download Full Audit Logs from M365 Tenant"{
             write-host "Running $selectedItem..." -ForegroundColor Green
-            #todo modify this to be a function
             . "$workingDirectory\Compliance\Get-AuditLogResults.ps1"
             Get-AuditLogResults -StartDate $startDate `
                 -EndDate $endDate `
@@ -219,18 +218,18 @@ do {
         }
         "Get Power Platform Users Via API" {
             . "$workingDirectory\Power-Platform\Get-UsersViaAPI.ps1"
-            $PowerPlatUsers = Get-UsersViaAPI -ClientId $clientId `
+            $PowerPlatUsers = Get-UsersViaAPI -ClientId $powerPlatClientId `
                 -ClientSecret $clientSecret `
-                -OrgUrl $orgUrl `
+                -OrgUrl $PowerPlatOrgUrl `
                 -TenantDomain $tenantDomain
             $PowerPlatUsers | out-file "$outputDirectory\powerplatusers.txt"
         }
         "Get Bot Components Via API"{
             . "$workingDirectory\Power-Platform\Get-BotComponentsViaAPI.ps1"
-            Get-BotComponentsViaAPI -ClientId $clientId `
-            -ClientSecret $clientSecret `
-            -OrgUrl $orgUrl `
-            -TenantDomain $tenantDomain `
+            Get-BotComponentsViaAPI -ClientId $powerPlatClientId `
+            -ClientSecret $powerPlatClientSecret `
+            -OrgUrl $PowerPlatOrgUrl `
+            -TenantDomain $PowerPlatTenantDomain `
             -FieldList "botcomponentid,componenttype,data,description,filedata,filedata_name,name,schemaname,createdon,_createdby_value,modifiedon,_modifiedby_value,_parentbotid_value" `
             | out-file "c:\temp\botcomponents.txt"
         }
@@ -262,11 +261,11 @@ do {
             . "$workingDirectory\Power-Platform\Get-CopilotAgentsViaAPI.ps1"
             $environments = Get-AdminPowerAppEnvironment
             foreach ($env in $environments) {
-                $orgUrl = $env.Internal.properties.linkedEnvironmentMetadata.instanceUrl -replace "https://", "" -replace "/", ""
-                if ($orgUrl) {
+                $PowerPlatOrgUrl = $env.Internal.properties.linkedEnvironmentMetadata.instanceUrl -replace "https://", "" -replace "/", ""
+                if ($PowerPlatOrgUrl) {
                     Get-CopilotAgentsViaAPI -ClientId $PowerPlatClientId `
                     -ClientSecret $PowerPlatClientSecret `
-                    -OrgUrl $orgUrl `
+                    -OrgUrl $PowerPlatOrgUrl `
                     -TenantDomain $PowerPlatTenantDomain `
                     -FieldList "botid,componentidunique,applicationmanifestinformation,name,configuration,createdon,publishedon,_ownerid_value,_createdby_value,solutionid,modifiedon,_owninguser_value,schemaname,_modifiedby_value,_publishedby_value,authenticationmode,synchronizationstatus,ismanaged" `
                     | out-file "$outputDirectory\bots.txt" -Append

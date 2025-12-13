@@ -173,7 +173,69 @@ foreach ($block in $transcriptBlocks) {
     Write-Host "Processing conversation: $($transcript.conversationtranscriptid)" -ForegroundColor Green
     
     try {
-        $contentJson = $transcript.content | ConvertFrom-Json -ErrorAction Stop
+        # Sanitize JSON content to fix common issues
+        $sanitizedContent = $transcript.content
+        
+        # More aggressive Unicode escape fixing
+        # Replace any \u that doesn't have exactly 4 hex digits following it
+        # This handles: \u123, \u12, \u1, \u (at any position)
+        while ($sanitizedContent -match '\\u(?![0-9a-fA-F]{4})') {
+            $sanitizedContent = $sanitizedContent -replace '\\u(?![0-9a-fA-F]{4})[0-9a-fA-F]{0,3}', ''
+        }
+        
+        # Remove any orphaned backslashes at the end of strings
+        $sanitizedContent = $sanitizedContent -replace '\\(?=[",\]\}])', ''
+        $sanitizedContent = $sanitizedContent -replace '\\$', ''
+        
+        # Remove control characters except newlines, carriage returns, and tabs
+        $sanitizedContent = $sanitizedContent -replace '[\x00-\x08\x0B\x0C\x0E-\x1F]', ''
+        
+        # Try to parse with more robust error recovery
+        try {
+            $contentJson = $sanitizedContent | ConvertFrom-Json -ErrorAction Stop
+        }
+        catch {
+            # If still failing, use character-by-character cleanup to find and fix the issue
+            Write-Warning "First parse attempt failed, trying aggressive cleanup..."
+            
+            # Find the position of the error (around position 503 based on error message)
+            # Remove problematic characters around that position in each text field
+            $sanitizedContent = $sanitizedContent -replace '("text"\s*:\s*"[^"\\]*)(\\[^"]{0,10})([^"]*")', '$1$3'
+            
+            # Also try to fix any remaining backslash-related issues
+            $sanitizedContent = $sanitizedContent -replace '\\(?!")', ''
+            
+            try {
+                $contentJson = $sanitizedContent | ConvertFrom-Json -ErrorAction Stop
+            }
+            catch {
+                # Last resort - strip out all text fields entirely
+                Write-Warning "Second parse attempt failed, removing all text fields..."
+                
+                # More comprehensive cleanup - handle unterminated strings
+                # Remove entire activities array items that have corrupted text
+                $sanitizedContent = $sanitizedContent -replace '"text"\s*:\s*"[^"]*$', '"text":""'
+                $sanitizedContent = $sanitizedContent -replace '"text"\s*:\s*"[^"\\]*(?:\\.[^"\\]*)*$', '"text":""'
+                
+                # Try to fix unterminated strings by closing them
+                $sanitizedContent = $sanitizedContent -replace '("text"\s*:\s*"[^"]*)$', '$1"'
+                
+                # If still broken, just remove all text field content
+                $sanitizedContent = $sanitizedContent -replace '"text"\s*:\s*"(?:[^"\\]|\\.)*', '"text":"'
+                
+                # Ensure proper closing
+                $sanitizedContent = $sanitizedContent -replace '"text"\s*:\s*""', '"text":""'
+                
+                try {
+                    $contentJson = $sanitizedContent | ConvertFrom-Json -ErrorAction Stop
+                }
+                catch {
+                    # Ultimate fallback - skip this transcript entirely
+                    Write-Warning "All parse attempts failed, skipping this conversation: $($_.Exception.Message)"
+                    continue
+                }
+            }
+        }
         
         # Parse metadata if available
         $metadata = $null

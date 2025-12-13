@@ -1,5 +1,4 @@
 #Requires -Modules ExchangeOnlineManagement
-
 function Get-CopilotInteractionAuditLogItems {
       param(
             [Parameter(Mandatory = $true)]

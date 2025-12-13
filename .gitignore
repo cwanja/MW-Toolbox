@@ -2,3 +2,4 @@ Testing.ps1
 Power-Platform/Get-AgentMessageConsumptionReport.ps1
 .env
 .vscode/settings.json
+Viva/Enable-VivaFeatures.ps1
